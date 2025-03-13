@@ -1,0 +1,8 @@
+{
+  "android": {
+    "package": "com.anonymous.reactcrm"
+  },
+  "ios": {
+    "bundleIdentifier": "com.anonymous.reactcrm"
+  }
+}
