@@ -19,7 +19,7 @@
   "version": "1.0.0",
   "scripts": {
     "dev": "expo start",
-    "build": "expo build",
+    "build": "expo export -p web",
     "start": "expo start",
     "lint": "expo lint",
     "android": "expo run:android",
