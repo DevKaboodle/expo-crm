@@ -1,8 +1,17 @@
 {
-  "android": {
-    "package": "com.anonymous.reactcrm"
-  },
-  "ios": {
-    "bundleIdentifier": "com.anonymous.reactcrm"
+  "expo": {
+    "name": "ReactCRM",
+    "slug": "react-crm",
+    "version": "1.0.0",
+    "android": {
+      "package": "com.anonymous.reactcrm"
+    },
+    "ios": {
+      "bundleIdentifier": "com.anonymous.reactcrm"
+    },
+    "web": {
+      "bundler": "metro",
+      "output": "dist"
+    }
   }
 }
