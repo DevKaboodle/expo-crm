@@ -27,10 +27,14 @@ export default function HomeScreen() {
       </View>
 
       {/* Table */}
-      <Table 
-        headers={["Order Id", "User", "Total Price", "Date", "Status"]} 
-        data={products.slice(0, 5).map(p => [`#${p.id}`, p.title, `$${p.price}`, "17 Jun 2021", "Shipped"])}
-      />
+      <Table
+  headers={["Order Id", "User", "Total Price", "Date", "Status"]}
+  data={products.map((p) => [`#${p.id}`, p.title, `$${p.price}`, "17 Jun 2021", "Shipped"])}
+  onView={(item) => console.log("View", item)}
+  onEdit={(item) => console.log("Edit", item)}
+  onDelete={(item) => console.log("Delete", item)}
+/>
+
 
       {/* Charts */}
       <View style={styles.chartContainer}>

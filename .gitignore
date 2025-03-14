@@ -11,6 +11,9 @@
 # production
 /build
 /dist
+/ios
+/android
+/.expo
 # misc
 .DS_Store
 .env.local
