@@ -1,24 +1,20 @@
 import React, { useState } from "react";
 import {
-  Modal,
   View,
   Text,
   TextInput,
+  Button,
+  Modal,
   TouchableOpacity,
   ScrollView,
-  Button,
-  StyleSheet,
   Alert,
+  StyleSheet,
 } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 
-const DynamicForm = ({ fields, onSubmit }) => {
-  const [formData, setFormData] = useState(
-    fields.reduce((acc, field) => ({
-      ...acc,
-      [field.name]: field.type === "select" ? field.options?.[0] || "" : "",
-    }), {})
-  );
+const DynamicForm = ({ fields = [], onSubmit }) => {
+  const [formData, setFormData] = useState({});
+
   const [errors, setErrors] = useState({});
 
   const validateForm = () => {
@@ -46,13 +42,6 @@ const DynamicForm = ({ fields, onSubmit }) => {
           valid = false;
         }
       }
-
-      if (field.type === "number" && formData[field.name]) {
-        if (isNaN(formData[field.name])) {
-          newErrors[field.name] = "Must be a valid number";
-          valid = false;
-        }
-      }
     });
 
     setErrors(newErrors);
@@ -61,14 +50,14 @@ const DynamicForm = ({ fields, onSubmit }) => {
 
   const handleChange = (name, value) => {
     setFormData({ ...formData, [name]: value });
-    setErrors({ ...errors, [name]: "" }); // Clear error on input
+    setErrors((prev) => ({ ...prev, [name]: "" })); // Clear error
   };
 
   const handleSubmit = () => {
     if (validateForm()) {
       onSubmit(formData);
     } else {
-      Alert.alert("Validation Error", "Please fix the errors before submitting.");
+      Alert.alert("Validation Error", "Please fix errors before submitting.");
     }
   };
 
@@ -77,14 +66,13 @@ const DynamicForm = ({ fields, onSubmit }) => {
       {fields.map((field) => (
         <View key={field.name} style={styles.inputContainer}>
           <Text style={styles.label}>{field.label}</Text>
-
           {field.type === "select" ? (
             <Picker
               selectedValue={formData[field.name]}
               onValueChange={(value) => handleChange(field.name, value)}
               style={styles.picker}
             >
-              {field.options.map((option) => (
+              {field.options?.map((option) => (
                 <Picker.Item key={option} label={option} value={option} />
               ))}
             </Picker>
@@ -93,15 +81,13 @@ const DynamicForm = ({ fields, onSubmit }) => {
               style={[styles.input, errors[field.name] && styles.errorInput]}
               value={formData[field.name]}
               onChangeText={(text) => handleChange(field.name, text)}
-              keyboardType={field.type === "number" || field.type === "phone" ? "numeric" : "default"}
+              keyboardType={field.type === "phone" ? "numeric" : "default"}
               placeholder={`Enter ${field.label}`}
             />
           )}
-
           {errors[field.name] && <Text style={styles.errorText}>{errors[field.name]}</Text>}
         </View>
       ))}
-
       <Button title="Submit" onPress={handleSubmit} />
     </ScrollView>
   );
@@ -112,14 +98,11 @@ const ModalForm = ({ modalVisible, setModalVisible, productFields, handleSubmit 
     <Modal visible={modalVisible} animationType="slide" transparent={true}>
       <View style={styles.modalContainer}>
         <View style={styles.modalContent}>
-          {/* Close Button (Cross Icon) */}
           <TouchableOpacity style={styles.closeIcon} onPress={() => setModalVisible(false)}>
             <Text style={styles.closeIconText}>✕</Text>
           </TouchableOpacity>
-
           <Text style={styles.modalTitle}>Add Product</Text>
           <DynamicForm fields={productFields} onSubmit={handleSubmit} />
-          
           <TouchableOpacity style={styles.closeButton} onPress={() => setModalVisible(false)}>
             <Text style={styles.closeButtonText}>Cancel</Text>
           </TouchableOpacity>
@@ -138,7 +121,8 @@ const styles = StyleSheet.create({
   },
   modalContent: {
     backgroundColor: "white",
-    width: "90%", // Increased width
+    width: "90%",
+    maxHeight: 800,
     padding: 20,
     borderRadius: 10,
     elevation: 5,

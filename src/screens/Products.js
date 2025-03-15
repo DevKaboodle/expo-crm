@@ -1,8 +1,8 @@
-import React, { useState,useEffect } from "react";
-import { View, Text, TouchableOpacity, Modal, StyleSheet, Alert } from "react-native";
-import Table from "../components/table"; // Ensure you import the Table component
-import DynamicForm from "../components/dynamicForm"; // Ensure you import the DynamicForm component
-import apiService from "../apiService"; // Ensure this is correctly set up
+import React, { useState, useEffect } from "react";
+import { View, Text, TouchableOpacity, Alert, StyleSheet } from "react-native";
+import apiService from "../apiService"; // Ensure correct path
+import Table from "../components/table";
+import ModalForm from "../components/dynamicForm"; // Ensure correct path
 
 export default function ProductsScreen() {
   const [modalVisible, setModalVisible] = useState(false);
@@ -14,21 +14,19 @@ export default function ProductsScreen() {
 
   const fetchProducts = async () => {
     try {
-      const products = await apiService.getProducts().then(res => res.data);
-
-      console.log(products)
-      setProducts(products || []); // Ensure it's always an array
+      const response = await apiService.getProducts();
+      setProducts(response.data || []);
     } catch (error) {
       console.error("Error fetching products:", error);
-      setProducts([]); // Fallback to empty array
+      setProducts([]);
     }
   };
 
   const productFields = [
-    { name: "title", label: "Title", type: "text" },
-    { name: "sku", label: "SKU", type: "text" },
+    { name: "title", label: "Title", type: "text", required: true },
+    { name: "sku", label: "SKU", type: "text", required: true },
     { name: "description", label: "Description", type: "text" },
-    { name: "price", label: "Price", type: "number" },
+    { name: "price", label: "Price", type: "number", required: true },
     { name: "stock", label: "Stock", type: "number" },
     { name: "weight", label: "Weight (grams)", type: "number" },
     { name: "karat", label: "Karat", type: "select", options: ["14K", "18K", "22K", "24K"] },
@@ -41,7 +39,7 @@ export default function ProductsScreen() {
       await apiService.createProduct(data);
       Alert.alert("Success", "Product Created Successfully!");
       setModalVisible(false);
-      fetchProducts(); // Refresh product list after adding
+      fetchProducts(); // Refresh the list
     } catch (error) {
       Alert.alert("Error", "Failed to Create Product");
     }
@@ -62,18 +60,13 @@ export default function ProductsScreen() {
         onDelete={(item) => console.log("Delete", item)}
       />
 
-      {/* Modal */}
-      <Modal visible={modalVisible} animationType="slide" transparent={true}>
-        <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>Add Product</Text>
-            <DynamicForm fields={productFields} onSubmit={handleSubmit} />
-            <TouchableOpacity style={styles.closeButton} onPress={() => setModalVisible(false)}>
-              <Text style={styles.closeButtonText}>Cancel</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </Modal>
+      {/* Modal Form */}
+      <ModalForm
+        modalVisible={modalVisible}
+        setModalVisible={setModalVisible}
+        productFields={productFields}
+        handleSubmit={handleSubmit}
+      />
     </View>
   );
 }
@@ -82,20 +75,4 @@ const styles = StyleSheet.create({
   container: { flex: 1, padding: 20, backgroundColor: "#fff" },
   addButton: { backgroundColor: "#3498db", padding: 10, borderRadius: 5, marginBottom: 10 },
   addButtonText: { color: "#fff", fontSize: 16, fontWeight: "bold", textAlign: "center" },
-  modalContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
-  },
-  modalContent: {
-    width: "90%",
-    backgroundColor: "#fff",
-    padding: 20,
-    borderRadius: 10,
-    alignItems: "center",
-  },
-  modalTitle: { fontSize: 20, fontWeight: "bold", marginBottom: 10 },
-  closeButton: { backgroundColor: "#e74c3c", padding: 10, borderRadius: 5, marginTop: 10 },
-  closeButtonText: { color: "#fff", fontSize: 16, fontWeight: "bold" },
 });
