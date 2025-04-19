@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const BASE_URL = "https://crm-backend-git-main-dev-kaboodles-projects.vercel.app/api";
+const BASE_URL = "https://crm-backend-api-nine.vercel.app/api";
 //const BASE_URL = "http://localhost:3003/api";
 
 const apiService = {
